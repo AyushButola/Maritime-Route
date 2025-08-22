@@ -1,0 +1,10 @@
+
+# Python ignores
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+myenv/
+.env
+
