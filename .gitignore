@@ -7,4 +7,21 @@ __pycache__/
 *.sqlite3
 myenv/
 .env
+# Django stuff
+*.sqlite3
+db.sqlite3
+/media/
+staticfiles/   # collected static files
+*.log
 
+# Migrations (optional – keep initial ones if team project)
+*/migrations/__pycache__/
+*/migrations/*.py
+
+# VS Code
+.vscode/
+.settings/
+
+# OS junk
+.DS_Store
+Thumbs.db
