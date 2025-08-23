@@ -1,7 +1,9 @@
+import os
 import requests
 import pandas as pd
 import numpy as np
 import joblib
+from django.conf import settings
 from tensorflow.keras.models import load_model
 
 # -------------------------------
@@ -9,26 +11,35 @@ from tensorflow.keras.models import load_model
 # -------------------------------
 API_KEY = "efe89ee12c2c4e8cd6e027fcf9504f15"   # OpenWeather API Key
 R = 6371  # Earth radius in km
+timesteps = 5
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+# Paths to ML artifacts
+MODEL_PATH = os.path.join(APP_DIR, "ml-model", "weather_rnn_model.h5")
+SCALER_PATH = os.path.join(APP_DIR, "ml-model", "weather_scaler.pkl")
+ENCODER_PATH = os.path.join(APP_DIR, "ml-model", "weather_label_encoder.pkl")
+FEATURES_PATH = os.path.join(APP_DIR, "ml-model", "weather_features.pkl")
 
-# ML model paths
-MODEL_PATH = "ml-model/weather_rnn_model.h5"
-SCALER_PATH = "ml-model/weather_scaler.pkl"
-ENCODER_PATH = "ml-model/weather_label_encoder.pkl"
-FEATURES_PATH = "ml-model/weather_features.pkl"
+print("[DEBUG] Looking for ML artifacts in:")
+print("MODEL_PATH:", MODEL_PATH)
+print("SCALER_PATH:", SCALER_PATH)
+print("ENCODER_PATH:", ENCODER_PATH)
+print("FEATURES_PATH:", FEATURES_PATH)
 
 # -------------------------------
-# Load ML artifacts ONCE at import
+# Load ML artifacts ONCE
 # -------------------------------
 try:
-    model = load_model(MODEL_PATH)
+    model = load_model(MODEL_PATH, compile=False)
     scaler = joblib.load(SCALER_PATH)
     label_encoder = joblib.load(ENCODER_PATH)
     train_features = joblib.load(FEATURES_PATH)
+    print("[INFO] ✅ ML artifacts loaded successfully.")
 except Exception as e:
-    print(f"[WARNING] Could not load ML model/scaler/encoder: {e}")
+    print(f"[ERROR] ❌ Could not load ML artifacts: {e}")
     model, scaler, label_encoder, train_features = None, None, None, None
-
-timesteps = 5
+    load_error = str(e)
+else:
+    load_error = None
 
 
 # -------------------------------
@@ -85,7 +96,7 @@ def get_weather_features(lat, lon):
 def predict_weather_from_api(lat, lon):
     """Fetch → preprocess → predict with ML model"""
     if model is None or scaler is None or label_encoder is None:
-        raise Exception("ML model/scaler/encoder not loaded.")
+        raise Exception(f"ML artifacts not loaded. Error: {load_error}")
 
     df, api_data = get_weather_features(lat, lon)
 
