@@ -4,7 +4,8 @@ from .utils import (
     get_5day_forecast,
     move_north,
     predict_weather_from_api,
-    get_graph_data
+    get_graph_data,
+    calculate_route_weather
 )
 
 
@@ -66,6 +67,21 @@ def graph_data_view(request):
         # --- Graph data ---
         data = get_graph_data(lat, lon)
         return Response(data)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+@api_view(['GET'])
+def route_weather(request):
+    try:
+        lat1 = float(request.query_params.get("lat1"))
+        lon1 = float(request.query_params.get("lon1"))
+        lat2 = float(request.query_params.get("lat2"))
+        lon2 = float(request.query_params.get("lon2"))
+        speed = float(request.query_params.get("speed"))
+
+        result = calculate_route_weather(lat1, lon1, lat2, lon2, speed)
+        return Response(result)
 
     except Exception as e:
         return Response({"error": str(e)}, status=400)

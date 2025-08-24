@@ -6,6 +6,7 @@ import joblib
 from django.conf import settings
 from tensorflow.keras.models import load_model
 import math
+from datetime import datetime, timedelta
 
 # -------------------------------
 # CONFIG
@@ -192,4 +193,62 @@ def get_graph_data(lat, lon):
         "temperature": temperature,
         "wind_speed": wind_speed,
         "wave_height": wave_height
+    }
+
+import requests
+import math
+from datetime import datetime, timedelta
+
+#API_KEY = "0f292dd4f556d0ca5c8c2bbf5ce7c950"
+
+# Haversine formula
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371
+    phi1, phi2 = math.radians(lat1), math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lon2 - lon1)
+
+    a = math.sin(dphi/2)**2 + math.cos(phi1)*math.cos(phi2)*math.sin(dlambda/2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    return R * c
+
+def get_forecast(lat2, lon2, arrival_time):
+    url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat2}&lon={lon2}&appid={API_KEY}&units=metric"
+    res = requests.get(url)
+    data = res.json()
+
+    if "list" not in data:
+        return None
+
+    # Find forecast closest to arrival time
+    closest = min(data['list'], key=lambda x: abs(datetime.fromtimestamp(x['dt']) - arrival_time))
+
+    return {
+        "description": closest['weather'][0]['description'],
+        "temp": closest['main']['temp'],
+        "feels_like": closest['main']['feels_like'],
+        "humidity": closest['main']['humidity'],
+        "pressure": closest['main']['pressure'],
+        "wind": closest['wind']['speed'],
+        "cloudiness": closest['clouds']['all'],
+        "visibility": closest.get('visibility', 0) / 1000,
+        "rain": closest.get('rain', {}).get('3h', 0),
+        "snow": closest.get('snow', {}).get('3h', 0)
+    }
+
+def calculate_route_weather(lat1, lon1, lat2, lon2, speed):
+    # Distance & travel time
+    distance = haversine(lat1, lon1, lat2, lon2)
+    hours = distance / speed
+    arrival_time = datetime.now() + timedelta(hours=hours)
+
+    # Forecast
+    forecast = get_forecast(lat2, lon2, arrival_time)
+
+    return {
+        "distance": round(distance, 2),
+        "travel_time_hours": round(hours, 2),
+        "travel_time_days": round(hours/24, 1),
+        "arrival_time": arrival_time.strftime('%Y-%m-%d %H:%M:%S'),
+        "forecast": forecast
     }
