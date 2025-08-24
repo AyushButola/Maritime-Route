@@ -1,0 +1,698 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime AI - Intelligent Weather Solutions</title>
+    <meta name="description" content="Professional maritime weather intelligence system with predictive analytics and route optimization">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Authentication Modals -->
+    <div class="auth-modal hidden" id="authModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h3 id="authModalTitle">Sign In</h3>
+                <button class="close-btn" id="closeAuthModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab-btn active" data-tab="login">Sign In</button>
+                    <button class="auth-tab-btn" data-tab="signup">Sign Up</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div class="auth-tab-content active" id="loginTab">
+                    <form id="loginForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" class="form-control" required="" placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" class="form-control" required="" placeholder="Enter your password">
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full-width">Sign In</button>
+                    </form>
+                </div>
+                
+                <!-- Signup Form -->
+                <div class="auth-tab-content" id="signupTab">
+                    <form id="signupForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="signupUsername">Username</label>
+                            <input type="text" id="signupUsername" class="form-control" required="" placeholder="Choose a username">
+                        </div>
+                        <div class="form-group">
+                            <label for="signupEmail">Email</label>
+                            <input type="email" id="signupEmail" class="form-control" required="" placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" class="form-control" required="" placeholder="Choose a password">
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full-width">Sign Up</button>
+                    </form>
+                </div>
+                
+                <div class="auth-message" id="authMessage"></div>
+                <div class="auth-loading hidden" id="authLoading">
+                    <div class="loading-spinner"></div>
+                    <span>Processing...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Left Navigation Panel -->
+    <nav class="main-navigation">
+        <div class="nav-header">
+            <div class="logo-container">
+                <div class="logo-icon">⚓</div>
+                <div class="logo-text">
+                    <h1>Maritime AI</h1>
+                    <span class="tagline">Intelligent Weather Solutions</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-menu">
+            <button class="nav-item active" data-slide="0" aria-label="Dashboard">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Dashboard</span>
+            </button>
+            <button class="nav-item" data-slide="1" aria-label="Forecast">
+                <span class="nav-icon">🌤</span>
+                <span class="nav-text">Forecast</span>
+            </button>
+            <button class="nav-item" data-slide="2" aria-label="Today's Details">
+                <span class="nav-icon">📅</span>
+                <span class="nav-text">Today's Details</span>
+            </button>
+            <button class="nav-item" data-slide="3" aria-label="Analytics">
+                <span class="nav-icon">📈</span>
+                <span class="nav-text">Analytics</span>
+            </button>
+        </div>
+        
+        <div class="nav-footer">
+            <div class="location-display">
+                <div class="location-name" id="locationName">North Atlantic Ocean</div>
+                <div class="coordinates" id="navCoordinates">Detecting position...</div>
+            </div>
+            <div class="status-indicator">
+                <div class="status-light"></div>
+                <span class="status-text">OPERATIONAL</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top Authentication Bar -->
+    <div class="auth-bar">
+        <!-- Anonymous State (Default) -->
+        <div class="auth-buttons" id="authButtons">
+            <button class="btn btn--outline btn--sm" id="loginBtn">Login</button>
+            <button class="btn btn--primary btn--sm" id="signupBtn">Sign Up</button>
+        </div>
+        
+        <!-- Authenticated State (Hidden by default) -->
+        <div class="user-profile hidden" id="userProfile">
+            <div class="user-info">
+                <div class="user-avatar">👤</div>
+                <div class="user-details">
+                    <span class="user-name" id="userName">User</span>
+                    <span class="user-email" id="userEmail">user@email.com</span>
+                </div>
+            </div>
+            <button class="btn btn--outline btn--sm" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Slides Wrapper -->
+        <div class="slides-wrapper" id="slidesWrapper">
+            <!-- Slide 1: Dashboard -->
+            <div class="slide active" id="slide0" data-slide="0">
+                <div class="slide-content">
+                    <!-- Weather Confidence Section -->
+                    <div class="confidence-section">
+                        <div class="confidence-card">
+                            <div class="confidence-header">
+                                <h2>Weather Confidence</h2>
+                                <div class="confidence-badge">Very High</div>
+                                <div class="update-info">
+                                    <div class="update-time">Last: 22:17 UTC</div>
+                                    <div class="next-update">Next: 22:47 UTC</div>
+                                </div>
+                            </div>
+                            <div class="confidence-display">
+                                <div class="confidence-value">96%</div>
+                                <div class="confidence-meter">
+                                    <div class="confidence-fill" style="width: 96%"></div>
+                                </div>
+                            </div>
+                            <div class="confidence-factors">
+                                <div class="factor">
+                                    <span class="factor-label">Satellite Data</span>
+                                    <span class="factor-value">98%</span>
+                                </div>
+                                <div class="factor">
+                                    <span class="factor-label">Model Accuracy</span>
+                                    <span class="factor-value">95%</span>
+                                </div>
+                                <div class="factor">
+                                    <span class="factor-label">Historical Patterns</span>
+                                    <span class="factor-value">94%</span>
+                                </div>
+                                <div class="factor">
+                                    <span class="factor-label">Sensor Data</span>
+                                    <span class="factor-value">97%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Grid -->
+                    <div class="dashboard-grid">
+                        <!-- Current Conditions Card -->
+                        <div class="conditions-card">
+                            <div class="card-header">
+                                <h3>Current Conditions</h3>
+                                <div class="conditions-time">22:17 UTC</div>
+                            </div>
+                            <div class="conditions-grid">
+                                <!-- Location Item - Enhanced -->
+                                <div class="condition-item primary" id="locationItem">
+                                    <div class="condition-icon">🧭</div>
+                                    <div class="condition-data">
+                                        <span class="condition-value" id="locationValue">Detecting...</span>
+                                        <span class="condition-label">Position</span>
+                                        <span class="condition-detail" id="locationDetail">GPS Status: Connecting</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Manual Location Input -->
+                                <div class="manual-location-panel" id="manualLocationPanel">
+                                    <div class="manual-location-header">
+                                        <span class="manual-location-title">Manual Position Entry</span>
+                                        <button class="toggle-manual-btn" id="toggleManualBtn">📍 Enter Manually</button>
+                                    </div>
+                                    <div class="manual-location-inputs hidden" id="manualInputs">
+                                        <div class="coordinate-input-group">
+                                            <div class="input-field">
+                                                <label for="latitudeInput">Latitude</label>
+                                                <input type="number" id="latitudeInput" placeholder="e.g. 41.2033" min="-90" max="90" step="0.0001">
+                                                <span class="input-suffix">°</span>
+                                            </div>
+                                            <div class="input-field">
+                                                <label for="longitudeInput">Longitude</label>
+                                                <input type="number" id="longitudeInput" placeholder="e.g. -71.5101" min="-180" max="180" step="0.0001">
+                                                <span class="input-suffix">°</span>
+                                            </div>
+                                        </div>
+                                        <div class="manual-location-actions">
+                                            <button class="btn-update-location" id="updateLocationBtn">Update Position</button>
+                                            <button class="btn-reset-gps" id="resetGpsBtn">Reset to GPS</button>
+                                        </div>
+                                        <div class="input-validation" id="inputValidation"></div>
+                                    </div>
+                                </div>
+
+                                <div class="condition-item">
+                                    <div class="condition-icon">🌡</div>
+                                    <div class="condition-data">
+                                        <span class="condition-value">22°C</span>
+                                        <span class="condition-label">Temperature</span>
+                                        <span class="condition-detail">Feels like 25°C</span>
+                                    </div>
+                                </div>
+                                <div class="condition-item">
+                                    <div class="condition-icon">💨</div>
+                                    <div class="condition-data">
+                                        <span class="condition-value">18 kt NE</span>
+                                        <span class="condition-label">Wind</span>
+                                        <span class="condition-detail">Gusts to 24 kt</span>
+                                    </div>
+                                </div>
+                                <div class="condition-item">
+                                    <div class="condition-icon">🌊</div>
+                                    <div class="condition-data">
+                                        <span class="condition-value">2.3m</span>
+                                        <span class="condition-label">Wave Height</span>
+                                        <span class="condition-detail">Period 7-9s</span>
+                                    </div>
+                                </div>
+                                <div class="condition-item">
+                                    <div class="condition-icon">👁</div>
+                                    <div class="condition-data">
+                                        <span class="condition-value">10 nm</span>
+                                        <span class="condition-label">Visibility</span>
+                                        <span class="condition-detail">Good</span>
+                                    </div>
+                                </div>
+                                <div class="condition-item">
+                                    <div class="condition-icon">📊</div>
+                                    <div class="condition-data">
+                                        <span class="condition-value">1015.2 mb</span>
+                                        <span class="condition-label">Pressure</span>
+                                        <span class="condition-detail">Stable</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Smart Alerts Card -->
+                        <div class="alerts-card">
+                            <div class="card-header">
+                                <h3>Smart Alerts</h3>
+                                <div class="alert-count">3</div>
+                            </div>
+                            <div class="alerts-list">
+                                <div class="alert-item priority-high">
+                                    <div class="alert-priority">HIGH</div>
+                                    <div class="alert-content">
+                                        <div class="alert-title">Optimal Navigation Window</div>
+                                        <div class="alert-message">Current conditions favor route optimization. Recommended course adjustment for improved safety and efficiency.</div>
+                                        <div class="alert-meta">
+                                            <span class="confidence">96% confidence</span>
+                                            <span class="action">Adjust course by 5° northeast</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert-item priority-medium">
+                                    <div class="alert-priority">MEDIUM</div>
+                                    <div class="alert-content">
+                                        <div class="alert-title">Swell Increase Expected</div>
+                                        <div class="alert-message">Wave heights increasing to 3.1m in next 8 hours due to distant weather system.</div>
+                                        <div class="alert-meta">
+                                            <span class="confidence">89% confidence</span>
+                                            <span class="action">Monitor vessel motion and secure cargo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert-item priority-low">
+                                    <div class="alert-priority">LOW</div>
+                                    <div class="alert-content">
+                                        <div class="alert-title">Fog Formation Possible</div>
+                                        <div class="alert-message">Patchy fog may develop in early morning hours reducing visibility to 2-4nm.</div>
+                                        <div class="alert-meta">
+                                            <span class="confidence">78% confidence</span>
+                                            <span class="action">Enhanced radar monitoring recommended</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vessel Optimization Card -->
+                        <div class="optimization-card">
+                            <div class="card-header">
+                                <h3>Vessel Optimization</h3>
+                                <div class="efficiency-badge">94% Efficient</div>
+                            </div>
+                            <div class="optimization-metrics">
+                                <div class="speed-optimization">
+                                    <div class="speed-display">
+                                        <div class="speed-current">
+                                            <span class="speed-label">Current Speed</span>
+                                            <span class="speed-value">13.5 kt</span>
+                                        </div>
+                                        <div class="speed-arrow">→</div>
+                                        <div class="speed-recommended">
+                                            <span class="speed-label">Recommended</span>
+                                            <span class="speed-value">14.2 kt</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="fuel-optimization">
+                                    <div class="fuel-comparison">
+                                        <div class="fuel-current">
+                                            <span class="fuel-label">Current</span>
+                                            <span class="fuel-value">85 L/hr</span>
+                                        </div>
+                                        <div class="fuel-optimized">
+                                            <span class="fuel-label">Optimized</span>
+                                            <span class="fuel-value">72 L/hr</span>
+                                        </div>
+                                    </div>
+                                    <div class="fuel-savings">
+                                        <span class="savings-percentage">15.3% savings</span>
+                                        <span class="savings-amount">$468 daily cost reduction</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Forecast -->
+            <div class="slide" id="slide1" data-slide="1">
+                <div class="slide-content">
+                    <div class="forecast-header">
+                        <h2>Forecast</h2>
+                        <div class="forecast-summary">
+                            <span class="summary-text">Storm conditions expected Day 4-5, improving thereafter</span>
+                        </div>
+                    </div>
+
+                    <!-- Forecast Charts -->
+                    <div class="forecast-charts">
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="forecastChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Daily Forecast Cards -->
+                    <div class="forecast-grid">
+                        <div class="forecast-day-card today">
+                            <div class="day-header">
+                                <span class="day-name">Today</span>
+                                <span class="day-date">Aug 23</span>
+                            </div>
+                            <div class="day-weather">
+                                <div class="weather-icon">☀</div>
+                                <div class="day-temp">
+                                    <span class="temp-high">25°</span>
+                                    <span class="temp-low">20°</span>
+                                </div>
+                            </div>
+                            <div class="day-conditions">
+                                <div class="condition">Wind: 18 kt</div>
+                                <div class="condition">Waves: 2.3m</div>
+                                <div class="condition">Rain: 15%</div>
+                            </div>
+                            <div class="confidence-level">96% confidence</div>
+                            <div class="mariner-note">Excellent conditions for all maritime operations</div>
+                        </div>
+
+                        <div class="forecast-day-card">
+                            <div class="day-header">
+                                <span class="day-name">Sunday</span>
+                                <span class="day-date">Aug 24</span>
+                            </div>
+                            <div class="day-weather">
+                                <div class="weather-icon">☁</div>
+                                <div class="day-temp">
+                                    <span class="temp-high">23°</span>
+                                    <span class="temp-low">18°</span>
+                                </div>
+                            </div>
+                            <div class="day-conditions">
+                                <div class="condition">Wind: 22 kt</div>
+                                <div class="condition">Waves: 2.8m</div>
+                                <div class="condition">Rain: 35%</div>
+                            </div>
+                            <div class="confidence-level">93% confidence</div>
+                            <div class="mariner-note">Moderate conditions, monitor wind increase</div>
+                        </div>
+
+                        <div class="forecast-day-card warning">
+                            <div class="day-header">
+                                <span class="day-name">Tuesday</span>
+                                <span class="day-date">Aug 26</span>
+                            </div>
+                            <div class="day-weather">
+                                <div class="weather-icon">⛈</div>
+                                <div class="day-temp">
+                                    <span class="temp-high">19°</span>
+                                    <span class="temp-low">15°</span>
+                                </div>
+                            </div>
+                            <div class="day-conditions">
+                                <div class="condition">Wind: 35 kt</div>
+                                <div class="condition">Waves: 4.8m</div>
+                                <div class="condition">Rain: 90%</div>
+                            </div>
+                            <div class="confidence-level">85% confidence</div>
+                            <div class="mariner-note danger">DANGEROUS CONDITIONS - Seek shelter or alter route</div>
+                        </div>
+
+                        <div class="forecast-day-card">
+                            <div class="day-header">
+                                <span class="day-name">Friday</span>
+                                <span class="day-date">Aug 29</span>
+                            </div>
+                            <div class="day-weather">
+                                <div class="weather-icon">☀</div>
+                                <div class="day-temp">
+                                    <span class="temp-high">25°</span>
+                                    <span class="temp-low">19°</span>
+                                </div>
+                            </div>
+                            <div class="day-conditions">
+                                <div class="condition">Wind: 16 kt</div>
+                                <div class="condition">Waves: 2.1m</div>
+                                <div class="condition">Rain: 15%</div>
+                            </div>
+                            <div class="confidence-level">94% confidence</div>
+                            <div class="mariner-note">Excellent conditions for operations return</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: Today's Details -->
+            <div class="slide" id="slide2" data-slide="2">
+                <div class="slide-content">
+                    <div class="today-header">
+                        <h2>Today's Details</h2>
+                        <div class="today-date">Saturday, August 23, 2025</div>
+                    </div>
+
+                    <!-- Today's Charts -->
+                    <div class="today-charts">
+                        <div class="chart-container" style="position: relative; height: 280px;">
+                            <canvas id="todayChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Today's Metrics Grid -->
+                    <div class="today-grid">
+                        <div class="today-metric-card">
+                            <div class="metric-header">
+                                <h3>Wind Speed</h3>
+                                <div class="current-value">18 kt</div>
+                            </div>
+                            <div class="metric-trend">
+                                <span class="trend-label">24hr Range:</span>
+                                <span class="trend-value">15-24 kt</span>
+                            </div>
+                            <div class="metric-forecast">Peak winds expected around 14:00 UTC</div>
+                        </div>
+
+                        <div class="today-metric-card">
+                            <div class="metric-header">
+                                <h3>Wave Height</h3>
+                                <div class="current-value">2.3m</div>
+                            </div>
+                            <div class="metric-trend">
+                                <span class="trend-label">24hr Range:</span>
+                                <span class="trend-value">2.0-2.9m</span>
+                            </div>
+                            <div class="metric-forecast">Gradually increasing throughout day</div>
+                        </div>
+
+                        <div class="today-metric-card">
+                            <div class="metric-header">
+                                <h3>Temperature</h3>
+                                <div class="current-value">22°C</div>
+                            </div>
+                            <div class="metric-trend">
+                                <span class="trend-label">24hr Range:</span>
+                                <span class="trend-value">20-25°C</span>
+                            </div>
+                            <div class="metric-forecast">Peak temperature mid-afternoon</div>
+                        </div>
+
+                        <div class="today-metric-card">
+                            <div class="metric-header">
+                                <h3>Pressure</h3>
+                                <div class="current-value">1015.2 mb</div>
+                            </div>
+                            <div class="metric-trend">
+                                <span class="trend-label">24hr Range:</span>
+                                <span class="trend-value">1014.9-1015.8 mb</span>
+                            </div>
+                            <div class="metric-forecast">Stable conditions, slight rise expected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: Analytics -->
+            <div class="slide" id="slide3" data-slide="3">
+                <div class="slide-content">
+                    <div class="analytics-header">
+                        <h2>Maritime Analytics</h2>
+                        <div class="analytics-period">
+                            <button class="period-btn active">30 Days</button>
+                            <button class="period-btn">90 Days</button>
+                            <button class="period-btn">1 Year</button>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Grid -->
+                    <div class="analytics-grid">
+                        <!-- Storm & Cyclone Detection -->
+                        <div class="analytics-card">
+                            <div class="card-header">
+                                <h3>Storm &amp; Cyclone Detection</h3>
+                                <div class="trend-indicator positive">+2.3%</div>
+                            </div>
+                            <div class="analytics-value">87.3%</div>
+                            <div class="analytics-subtitle">Detection accuracy rate</div>
+                            <div class="detection-metrics">
+                                <div class="metric-item">
+                                    <span class="metric-label">Tropical Storms</span>
+                                    <span class="metric-value">92.1%</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Winter Storms</span>
+                                    <span class="metric-value">88.7%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Swell Detection -->
+                        <div class="analytics-card">
+                            <div class="card-header">
+                                <h3>Swell Detection</h3>
+                                <div class="trend-indicator positive">+1.7%</div>
+                            </div>
+                            <div class="analytics-value">94.6%</div>
+                            <div class="analytics-subtitle">Swell prediction accuracy</div>
+                            <div class="detection-metrics">
+                                <div class="metric-item">
+                                    <span class="metric-label">Long Period Swell</span>
+                                    <span class="metric-value">96.2%</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Wind Swell</span>
+                                    <span class="metric-value">92.8%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fog Detection -->
+                        <div class="analytics-card">
+                            <div class="card-header">
+                                <h3>Fog Detection</h3>
+                                <div class="trend-indicator positive">+3.1%</div>
+                            </div>
+                            <div class="analytics-value">91.2%</div>
+                            <div class="analytics-subtitle">Fog prediction accuracy</div>
+                            <div class="detection-metrics">
+                                <div class="metric-item">
+                                    <span class="metric-label">Radiation Fog</span>
+                                    <span class="metric-value">93.5%</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Advection Fog</span>
+                                    <span class="metric-value">89.1%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current Alert -->
+                        <div class="analytics-card">
+                            <div class="card-header">
+                                <h3>Current Alert</h3>
+                                <div class="trend-indicator positive">+1.9%</div>
+                            </div>
+                            <div class="analytics-value">88.9%</div>
+                            <div class="analytics-subtitle">Current prediction accuracy</div>
+                            <div class="detection-metrics">
+                                <div class="metric-item">
+                                    <span class="metric-label">Tidal Currents</span>
+                                    <span class="metric-value">91.4%</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Wind-Driven Currents</span>
+                                    <span class="metric-value">86.7%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detection Trends Chart -->
+                        <div class="analytics-card chart-card">
+                            <div class="card-header">
+                                <h3>Detection Performance Trends</h3>
+                            </div>
+                            <div class="chart-container" style="position: relative; height: 280px;">
+                                <canvas id="detectionChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Weather Accuracy Overview -->
+                        <div class="analytics-card">
+                            <div class="card-header">
+                                <h3>Overall Weather Accuracy</h3>
+                                <div class="trend-indicator positive">+2.4%</div>
+                            </div>
+                            <div class="analytics-value">94.2%</div>
+                            <div class="analytics-subtitle">Combined prediction accuracy</div>
+                            <div class="accuracy-breakdown">
+                                <div class="accuracy-item">
+                                    <span class="accuracy-label">Wind Forecast</span>
+                                    <span class="accuracy-value">95.8%</span>
+                                </div>
+                                <div class="accuracy-item">
+                                    <span class="accuracy-label">Wave Forecast</span>
+                                    <span class="accuracy-value">92.7%</span>
+                                </div>
+                                <div class="accuracy-item">
+                                    <span class="accuracy-label">Temperature</span>
+                                    <span class="accuracy-value">97.1%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Emergency Notification Modal -->
+    <div class="emergency-modal hidden" id="emergencyModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🚨 Emergency Weather Alert</h3>
+                <button class="close-btn" id="closeModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-severity critical">CRITICAL</div>
+                <div class="alert-title">Tropical Cyclone Development</div>
+                <div class="alert-description">Category 2 storm system developing 180nm southeast. Current track projects intersection with shipping lanes in 24-36 hours.</div>
+                <div class="alert-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Wind Speed:</span>
+                        <span class="detail-value">65-85 kt</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Wave Height:</span>
+                        <span class="detail-value">6-9m</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Estimated Impact:</span>
+                        <span class="detail-value">24-36 hours</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--secondary" id="acknowledgeBtn">Acknowledge</button>
+                <button class="btn btn--primary" id="routeOptionsBtn">View Route Options</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+
+</body></html>
