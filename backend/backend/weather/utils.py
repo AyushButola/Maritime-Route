@@ -254,3 +254,15 @@ def calculate_route_weather(lat1, lon1, lat2, lon2, speed):
         "arrival_time": arrival_time.strftime('%Y-%m-%d %H:%M:%S'),
         "forecast": forecast
     }
+from math import ceil
+def calculate_fog_percentage(visibility):
+    """Return fog detection percentage based on low visibility."""
+    # visibility < 1000m → 100%, 10,000m+ → 0%, linear inverse
+    visibility = min(10000, max(visibility, 0))
+    return ceil((1 - (visibility / 10000.0)) * 100)
+
+def calculate_alert_level(alerts):
+    """Return alert level percentage based on number of triggered alerts."""
+    max_possible_alerts = 5  # Adjust as per your system
+    count = len(alerts)
+    return min(100, ceil((count / max_possible_alerts) * 100))

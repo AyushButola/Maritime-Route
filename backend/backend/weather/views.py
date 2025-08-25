@@ -1,12 +1,63 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+import requests
+
 from .utils import (
     get_5day_forecast,
     move_north,
     predict_weather_from_api,
     get_graph_data,
-    calculate_route_weather
+    calculate_route_weather,
+    calculate_fog_percentage,
+     calculate_alert_level
 )
+
+API_KEY = "efe89ee12c2c4e8cd6e027fcf9504f15"
+
+
+
+def calculate_fog_percentage(visibility):
+    return max(0, min(100, (10000 - visibility) / 100))
+
+def calculate_alert_level(alerts):
+    return len(alerts) * 10  # simple example
+
+@api_view(["GET"])
+def weather_analytics_view(request):
+    lat = request.GET.get("lat")
+    lon = request.GET.get("lon")
+
+    if not lat or not lon:
+        return Response({"error": "lat and lon are required"}, status=400)
+
+    try:
+        # Get live weather data
+        url = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}&units=metric"
+        response = requests.get(url).json()
+
+        # Extract required fields
+        visibility = response.get("visibility", 10000)
+        alerts = []
+
+        if "rain" in response:
+            alerts.append("🌧️ Rain")
+        if response.get("weather", [{}])[0].get("main", "").lower() in ["thunderstorm", "storm"]:
+            alerts.append("⚡ Thunderstorm")
+        if visibility < 3000:
+            alerts.append("🌫️ Fog")
+
+        # Compute percentages
+        fog = calculate_fog_percentage(visibility)
+        alert_level = calculate_alert_level(alerts)
+
+        return Response({
+            "fog_detection": fog,
+            "alert_level": alert_level,
+            "alerts": alerts
+        })
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
 
 
 @api_view(['GET'])
