@@ -70,16 +70,17 @@ def get_weather_features(lat, lon):
     response = requests.get(url).json()
 
     api_data = {
-        "temperature": response["main"]["temp"],
-        "humidity": response["main"]["humidity"],
-        "pressure": response["main"]["pressure"],
-        "wind_speed": response["wind"]["speed"],
-        "uvi": response.get("uvi", 0),
-        "rain_flag": 1 if "rain" in response else 0,
-        "storm_flag": 1 if response.get("weather", [{}])[0].get("main", "").lower() in ["storm", "thunderstorm"] else 0,
-        "snow_flag": 1 if "snow" in response else 0,
-        "visibility": response.get("visibility", 10000)
-    }
+    "temperature": response["main"]["temp"],
+    "humidity": response["main"]["humidity"],
+    "pressure": response["main"]["pressure"],
+    "wind_speed": response["wind"]["speed"],
+    "uvi": 0,  # Not included in /weather API
+    "rain_flag": 1 if response.get("rain", {}).get("1h", 0) > 0 else 0,
+    "storm_flag": 1 if response.get("weather", [{}])[0].get("main", "").lower() == "thunderstorm" else 0,
+    "snow_flag": 1 if response.get("snow", {}).get("1h", 0) > 0 else 0,
+    "visibility": response.get("visibility", 10000)
+}
+
 
     df = pd.DataFrame([api_data])
 

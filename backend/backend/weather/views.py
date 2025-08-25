@@ -26,11 +26,11 @@ def forecast_view(request):
         new_lat, new_lon = move_north(lat, lon, km_north)
 
         # --- Forecast data ---
-        forecast_list = get_5day_forecast(new_lat, new_lon)
+        forecast_list = get_5day_forecast(lat,lon)
 
         # --- ML Prediction + alerts ---
         try:
-            prediction_result = predict_weather_from_api(new_lat, new_lon)
+            prediction_result = predict_weather_from_api(lat, lon)
             predicted_label = prediction_result["prediction"]
             api_data = prediction_result["api_data"]
             weather_alerts = prediction_result["alerts"]
