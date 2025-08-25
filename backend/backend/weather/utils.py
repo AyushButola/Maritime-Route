@@ -7,7 +7,7 @@ from tensorflow.keras.models import load_model
 # -------------------------------
 # CONFIG
 # -------------------------------
-API_KEY = "efe89ee12c2c4e8cd6e027fcf9504f15"   # OpenWeather API Key
+API_KEY = os.getenv("API_KEY")   # OpenWeather API Key
 R = 6371  # Earth radius in km
 
 # ML model paths
