@@ -1,31 +1,87 @@
-from django.shortcuts import render
-
-# Create your views here.
-# views.py
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .utils import get_5day_forecast, move_north
+from .utils import (
+    get_5day_forecast,
+    move_north,
+    predict_weather_from_api,
+    get_graph_data,
+    calculate_route_weather
+)
+
 
 @api_view(['GET'])
 def forecast_view(request):
-    """
-    Frontend sends ?lat=...&lon=...
-    Backend calculates a point 100km north and returns 5-day / 3-hour forecast.
-    """
     try:
-        # Get current coordinates from request query params
-        lat = float(request.query_params.get("lat"))
-        lon = float(request.query_params.get("lon"))
-        km_north = 100  # distance to move north
+        # --- Input validation ---
+        lat_param = request.query_params.get("lat")
+        lon_param = request.query_params.get("lon")
+        if not lat_param or not lon_param:
+            return Response({"error": "Missing required parameters: lat, lon"}, status=400)
 
-        # Calculate new lat/lon
+        lat = float(lat_param)
+        lon = float(lon_param)
+        km_north = float(request.query_params.get("km", 100))
+
+        # --- Move location north ---
         new_lat, new_lon = move_north(lat, lon, km_north)
 
-        # Fetch 5-day / 3-hour forecast
+        # --- Forecast data ---
         forecast_list = get_5day_forecast(new_lat, new_lon)
 
-        # Return the forecast directly (no serializer needed)
-        return Response({"lat": new_lat, "lon": new_lon, "forecast": forecast_list})
+        # --- ML Prediction + alerts ---
+        try:
+            prediction_result = predict_weather_from_api(new_lat, new_lon)
+            predicted_label = prediction_result["prediction"]
+            api_data = prediction_result["api_data"]
+            weather_alerts = prediction_result["alerts"]
+        except Exception as ml_error:
+            predicted_label = None
+            api_data = {}
+            weather_alerts = [f"⚠️ ML model error: {str(ml_error)}"]
+
+        return Response({
+            "lat": new_lat,
+            "lon": new_lon,
+            "api_weather_data": api_data,
+            "ml_prediction": predicted_label,
+            "forecast": forecast_list,
+            "alerts": weather_alerts
+        })
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+
+@api_view(['GET'])
+def graph_data_view(request):
+    try:
+        # --- Input validation ---
+        lat_param = request.query_params.get("lat")
+        lon_param = request.query_params.get("lon")
+        if not lat_param or not lon_param:
+            return Response({"error": "Missing required parameters: lat, lon"}, status=400)
+
+        lat = float(lat_param)
+        lon = float(lon_param)
+
+        # --- Graph data ---
+        data = get_graph_data(lat, lon)
+        return Response(data)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
+@api_view(['GET'])
+def route_weather(request):
+    try:
+        lat1 = float(request.query_params.get("lat1"))
+        lon1 = float(request.query_params.get("lon1"))
+        lat2 = float(request.query_params.get("lat2"))
+        lon2 = float(request.query_params.get("lon2"))
+        speed = float(request.query_params.get("speed"))
+
+        result = calculate_route_weather(lat1, lon1, lat2, lon2, speed)
+        return Response(result)
 
     except Exception as e:
         return Response({"error": str(e)}, status=400)
