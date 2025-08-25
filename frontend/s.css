@@ -1,0 +1,480 @@
+/*
+ * S.CSS - Marine Weather Website UI
+ *
+ * This stylesheet has been refactored for a modern, clean, and impressive
+ * marine weather theme, with a focus on smooth transitions and a consistent
+ * aesthetic. This version uses a professional blue and gray palette for a
+ * data-driven feel, perfect for a hackathon entry.
+ *
+ * All changes are purely aesthetic and do not affect functionality.
+ */
+
+:root {
+  /* Primitive Color Tokens */
+  --color-dark-blue: #0f172a; /* Deeper background */
+  --color-deep-ocean: #1e293b; /* Primary surface color */
+  --color-navy: #334155; /* Secondary accent */
+  --color-steel-blue: #475569; /* Lighter accent */
+  --color-sky-blue: #60a5fa; /* Vibrant primary color */
+  --color-electric-blue: #2563eb; /* Primary color hover */
+  --color-light-gray: #e2e8f0; /* Text on dark backgrounds */
+  --color-medium-gray: #94a3b8; /* Secondary text */
+  --color-white: #f8fafc; /* For headings and key values */
+
+  /* Semantic Color Tokens */
+  --color-background: var(--color-dark-blue);
+  --color-surface: rgba(30, 41, 59, 0.7); /* Glassy effect */
+  --color-text: var(--color-light-gray);
+  --color-text-secondary: var(--color-medium-gray);
+  --color-primary: var(--color-sky-blue);
+  --color-primary-hover: var(--color-electric-blue);
+  --color-primary-active: #1e40af;
+  --color-secondary: var(--color-navy);
+  --color-border: rgba(96, 165, 250, 0.2);
+  --color-btn-primary-text: var(--color-dark-blue);
+  --color-card-border: rgba(96, 165, 250, 0.2);
+  --color-error: #ef4444;
+  --color-success: #22c55e;
+  --color-warning: #f97316;
+  --color-info: var(--color-sky-blue);
+
+  /* Typography */
+  --font-family-base: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  --font-size-4xl: 3rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+
+  /* Spacing */
+  --space-4: 0.25rem;
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-20: 1.25rem;
+  --space-24: 1.5rem;
+  --space-32: 2rem;
+  --space-48: 3rem;
+  --space-64: 4rem;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-base: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows and Effects */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.12);
+  --glass-effect: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(96, 165, 250, 0.2);
+
+  /* Animation */
+  --transition-duration: 0.3s;
+  --transition-ease: ease-in-out;
+}
+
+/* Base Styles */
+html {
+  font-size: 16px;
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--color-background);
+  background-image: radial-gradient(at 0% 100%, var(--color-deep-ocean) 0%, transparent 50%),
+                    radial-gradient(at 100% 0%, var(--color-navy) 0%, transparent 50%);
+  background-size: 200% 200%;
+  animation: bg-animate 15s ease-in-out infinite alternate;
+}
+
+@keyframes bg-animate {
+  0% { background-position: 0% 100%, 100% 0%; }
+  100% { background-position: 100% 0%, 0% 100%; }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-white);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-duration) var(--transition-ease);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* Navigation */
+.navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  backdrop-filter: blur(20px);
+  z-index: 1000;
+  padding: var(--space-16) var(--space-24);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-brand .logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.app-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-name {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+  line-height: 1;
+}
+
+.app-tagline {
+  font-size: var(--font-size-sm);
+  color: var(--color-light-gray);
+  line-height: 1.2;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: var(--space-32);
+}
+
+.nav-item a {
+  position: relative;
+  color: var(--color-medium-gray);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-duration) var(--transition-ease);
+}
+
+.nav-item a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width var(--transition-duration) var(--transition-ease);
+}
+
+.nav-item a:hover::after,
+.nav-item a.active::after {
+  width: 100%;
+}
+
+.nav-item a.active {
+  color: var(--color-white);
+}
+
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  padding: var(--space-64) var(--space-24);
+}
+
+.hero-title {
+  font-size: var(--font-size-4xl);
+  color: var(--color-white);
+  margin-bottom: var(--space-16);
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.hero-subtitle {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-48);
+}
+
+.page-links {
+  margin-top: var(--space-32);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-16);
+}
+
+.page-links a {
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(10px);
+  padding: var(--space-16) var(--space-32);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  border: 1px solid var(--color-card-border);
+  transition: all var(--transition-duration) var(--transition-ease);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.page-links a:hover {
+  background: rgba(30, 41, 59, 0.9);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Search Container */
+.search-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-16);
+}
+
+.search-form .form-control {
+  background: var(--color-surface);
+  border: 1px solid var(--color-glass-border);
+  color: var(--color-text);
+  backdrop-filter: blur(10px);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-md);
+  flex: 1;
+  min-width: 150px;
+  transition: all var(--transition-duration) var(--transition-ease);
+}
+
+.search-form .form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.5);
+  outline: none;
+}
+
+.search-form .form-control::placeholder {
+  color: var(--color-medium-gray);
+}
+
+.search-form .btn {
+  padding: var(--space-12) var(--space-24);
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--radius-base);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-btn-primary-text);
+}
+
+.btn--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn--secondary {
+  background: var(--color-surface);
+  border: 1px solid var(--color-glass-border);
+  color: var(--color-text);
+}
+
+.btn--secondary:hover {
+  background: rgba(30, 41, 59, 0.9);
+}
+
+/* Main Container and Grid */
+.container {
+  max-width: 1200px;
+  margin: var(--space-48) auto;
+  padding: 0 var(--space-24);
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-24);
+  margin-bottom: var(--space-48);
+}
+
+.weather-card {
+  background: var(--color-surface);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  text-align: center;
+  transition: transform var(--transition-duration) var(--transition-ease),
+              box-shadow var(--transition-duration) var(--transition-ease);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.weather-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.main-weather {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-48) var(--space-24);
+}
+
+.weather-icon {
+  font-size: 6rem;
+  margin-bottom: var(--space-16);
+  color: var(--color-info);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.weather-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.weather-info h3 {
+  font-size: var(--font-size-4xl);
+  color: var(--color-white);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+.weather-info p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  margin: 0;
+}
+
+.weather-card h4 {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-16);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.metric-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-sky-blue);
+}
+
+/* Alerts Section */
+.alerts-section {
+  margin-bottom: var(--space-48);
+}
+
+.alerts-section h3 {
+  color: var(--color-white);
+  margin-bottom: var(--space-24);
+  font-size: var(--font-size-2xl);
+  text-align: center;
+}
+
+.alerts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-16);
+}
+
+.alert-item {
+  background: var(--color-surface);
+  border-radius: var(--radius-full);
+  padding: var(--space-12) var(--space-24);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border: 1px solid var(--color-card-border);
+  color: var(--color-text);
+}
+
+/* Location Info */
+.location-info {
+  background: var(--color-navy);
+  color: var(--color-text-secondary);
+  padding: var(--space-12) var(--space-24);
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(10px);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  max-width: fit-content;
+  margin: 0 auto var(--space-48) auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: var(--space-32) var(--space-16);
+  }
+
+  .hero-title {
+    font-size: var(--font-size-3xl);
+  }
+
+  .main-weather {
+    flex-direction: column;
+  }
+
+  .container {
+    padding: 0 var(--space-16);
+  }
+
+  .search-form {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 769px) {
+  .main-weather {
+    grid-column: span 2;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: var(--space-48);
+  }
+}
