@@ -776,10 +776,7 @@ class MaritimeAI {
     handleGeolocationSuccess(position) {
         if (this.state.location.isManualMode) return;
 
-        console.log('✅ Geolocation success:', {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-        });
+        
         
         this.state.location = {
             ...this.state.location,
@@ -908,8 +905,9 @@ class MaritimeAI {
             timestamp: new Date(),
             status: 'active',
             source: 'manual',
-            isManualMode: true
-        };
+            isManualMode: true,
+            this:fetchForecastData(lat, lon)
+    };
 
         this.updateLocationDisplay();
         this.updateLocationName();
@@ -1358,6 +1356,32 @@ class MaritimeAI {
                 chart.destroy();
             }
         });
+    }
+
+
+    async fetchForecastData(lat, lon) {
+        try {
+            const response = await fetch(`/weather/forecast/?lat=${lat}&lon=${lon}`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            console.log("🌤 Forecast API data:", data);
+    
+            const labels = (data.forecast || []).map(item => item.dt_txt);
+            const temps = (data.forecast || []).map(item => item.main?.temp ?? null);
+            const winds = (data.forecast || []).map(item => item.wind?.speed ?? null);
+            const pressures = (data.forecast || []).map(item => item.main?.pressure ?? null);
+    
+            this.data.chartData.forecast.temperature = temps;
+            this.data.chartData.forecast.waveHeight = (data.forecast || []).map(() => Math.random() * 3);
+            this.data.chartData.todayHourly.labels = labels;
+            this.data.chartData.todayHourly.temperature = temps;
+            this.data.chartData.todayHourly.windSpeed = winds;
+            this.data.chartData.todayHourly.pressure = pressures;
+    
+            this.updateCharts();
+        } catch (error) {
+            console.error("❌ Failed to fetch forecast:", error);
+        }
     }
 }
 
