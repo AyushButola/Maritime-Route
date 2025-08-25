@@ -12,7 +12,7 @@ from .utils import (
      calculate_alert_level
 )
 
-API_KEY = "efe89ee12c2c4e8cd6e027fcf9504f15"
+API_KEY = os.getenv("API_KEY")
 
 
 
