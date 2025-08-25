@@ -25,3 +25,6 @@ staticfiles/   # collected static files
 # OS junk
 .DS_Store
 Thumbs.db
+
+#windows crap
+*:Zone.Identifier

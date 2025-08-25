@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oceanova - 7-Day Forecast</title>
+    <link rel="stylesheet" href="forecast.css">
+    <!-- Font Awesome for weather icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+    <div class="nav-brand">
+        <!-- New Logo and Title Block -->
+        <a href="index.html" class="logo-link">
+            <!-- <img src="Screenshot 2025-08-25 165916.png" alt="Maritime AI Logo" class="app-logo"> -->
+            <!-- <i class="fa-solid fa-anchor"></i> -->
+            <div class="app-title-group">
+                <h2 class="app-name">Maritime AI</h2>
+                <p class="app-tagline">Intelligent Weather Solutions</p>
+            </div>
+        </a>
+    </div>
+    <!-- ... rest of your navigation menu ... -->
+</nav>
+    <a href="/index.html">HOME</a>
+    <a href="/graph.html">GRAPH</a> 
+    <a href="/search.html">PATH ANALYTICS</a>
+
+    <div class="loading-spinner hidden">
+        <div class="spinner"></div>
+        <p>Fetching 7-day forecast...</p>
+    </div>
+
+    <main class="main-content">
+        <section id="seven-day-forecast" class="section active">
+            <div class="container">
+                <div class="section-header">
+                    <h2>7-Day Weather Forecast</h2>
+                    <p>Get a comprehensive look at the upcoming week's marine weather.</p>
+                    <p id="currentLocationDisplay" class="text-secondary">Location: Using GPS...</p>
+                </div>
+
+                <div class="input-form-container">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="forecastLat">Latitude</label>
+                            <input type="text" id="forecastLat" class="form-control" placeholder="e.g., 28.4595">
+                        </div>
+                        <div class="form-group">
+                            <label for="forecastLon">Longitude</label>
+                            <input type="text" id="forecastLon" class="form-control" placeholder="e.g., 77.0266">
+                        </div>
+                    </div>
+                    <div class="flex justify-center mt-16 gap-16">
+                        <button class="btn btn--primary" id="manualForecastBtn">Get Forecast</button>
+                        <button class="btn btn--secondary" id="gpsForecastBtn">Use My Location</button>
+                    </div>
+                </div>
+
+                <div id="forecastCardsContainer" class="forecast-grid-7day">
+                    <!-- Forecast cards will be injected here by JavaScript -->
+                    <div class="forecast-card-placeholder">Loading forecast...</div>
+                    <div class="forecast-card-placeholder">Loading forecast...</div>
+                    <div class="forecast-card-placeholder">Loading forecast...</div>
+                    <div class="forecast-card-placeholder">Loading forecast...</div>
+                    <div class="forecast-card-placeholder">Loading forecast...</div>
+                    <div class="forecast-card-placeholder">Loading forecast...</div>
+                    <div class="forecast-card-placeholder">Loading forecast...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="forecast.js"></script>
+</body>
+</html>

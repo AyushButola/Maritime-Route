@@ -1,0 +1,156 @@
+/* Add to your primary CSS file (e.g., s.css, forecast.css, s2.css) */
+
+/* Styles for the logo and title group */
+.nav-brand .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Remove underline from the link */
+    color: inherit; /* Inherit color from parent for consistency */
+}
+
+.app-logo {
+    height: 40px; /* Adjust as needed */
+    width: auto;
+    margin-right: 12px; /* Space between logo and text */
+}
+
+.app-title-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.app-name {
+    font-size: var(--font-size-xl); /* Or adjust to your desired size */
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white); /* Assuming a dark background for the navbar */
+    margin: 0; /* Remove default margin from h2 */
+    line-height: 1; /* Adjust line height for better alignment */
+}
+
+.app-tagline {
+    font-size: var(--font-size-sm); /* Smaller font for the tagline */
+    color: rgba(255, 255, 255, 0.7); /* Slightly lighter color for secondary text */
+    margin: 0; /* Remove default margin from p */
+    line-height: 1.2; /* Adjust line height */
+}
+
+/* Ensure the navbar itself has appropriate styling for this new content */
+.navbar {
+    /* Existing navbar styles, make sure it's a flex container for alignment */
+    display: flex;
+    justify-content: space-between; /* To push brand left and menu right */
+    align-items: center;
+    padding: 15px 24px; /* Adjust padding as needed */
+    background: rgba(31, 33, 33, 0.9); /* Example dark background, adjust to your theme */
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    position: sticky; /* Keep navbar at top */
+    top: 0;
+    z-index: 100;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .app-logo {
+        height: 32px; /* Smaller logo on mobile */
+        margin-right: 8px;
+    }
+    .app-name {
+        font-size: var(--font-size-lg);
+    }
+    .app-tagline {
+        font-size: var(--font-size-xs);
+    }
+    .navbar {
+        padding: 10px 16px;
+    }
+}
+
+ body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #6a85b6, #bac8e0);
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+header {
+  padding: 20px;
+  text-align: center;
+  background: #3b5998;
+  font-size: 24px;
+}
+
+nav {
+  margin-top: 10px;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 16px;
+  margin: 5px;
+  border: none;
+  background: #ffffff22;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+main {
+  padding: 30px;
+}
+
+.charts {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.chart-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 15px;
+  width: 40%;
+}
+
+/* New: Loading spinner styles */
+.loading-spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  color: white;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .chart-card {
+    width: 90%;
+  }
+}
