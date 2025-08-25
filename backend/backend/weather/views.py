@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import requests
+import os
 
 from .utils import (
     get_5day_forecast,
@@ -12,7 +13,7 @@ from .utils import (
      calculate_alert_level
 )
 
-API_KEY = "efe89ee12c2c4e8cd6e027fcf9504f15"
+API_KEY = os.getenv("API_KEY")
 
 
 
